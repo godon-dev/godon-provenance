@@ -1,0 +1,30 @@
+name: weekly-posture-scorecard
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  scorecard:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: [godon, godon-robots, godon-images, godon-charts, godon-cli, godon-controller, godon-documentation, godon-test-infra, godon-provenance]
+    steps:
+      - name: ossf scorecard
+        uses: ossf/scorecard-action@v2
+        with:
+          repo: godon-dev/${{ matrix.repo }}
+          results_format: sarif
+          results_file: scorecard-${{ matrix.repo }}.sarif
+          publish_results: true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scorecard-${{ matrix.repo }}
+          path: scorecard-${{ matrix.repo }}.sarif

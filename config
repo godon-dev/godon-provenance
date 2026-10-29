@@ -1,0 +1,10 @@
+# godon-provenance config — read by scripts; plain key=value
+org_namespace=godon-dev
+house_holder_marker=Tafelmeier
+own_license_marker=AGPL-3.0-or-later
+sweep_repos=godon godon-robots godon-images godon-charts godon-cli godon-controller godon-documentation godon-test-infra godon-org-profile godon-mind-chime
+gate_repos=godon godon-robots godon-images godon-charts godon-cli godon-controller godon-documentation godon-test-infra
+# mind-chime: encrypted, local sweep only, no CI lane
+projects_root=/projects
+commit_identity=godon-robot[bot]
+coauthor_trailer=Co-authored-by: cherusk <10729954+cherusk@users.noreply.github.com>

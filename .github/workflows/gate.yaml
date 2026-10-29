@@ -1,0 +1,30 @@
+name: provenance-marker-gate
+# Optional per-PR second speed. Not wired to any repo by default;
+# see README "organs" — wire via a 3-line caller + org ruleset if ever wanted.
+on:
+  workflow_call:
+    inputs:
+      base:
+        type: string
+        default: "origin/main"
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout calling repo (full history for the diff)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: checkout tooling
+        uses: actions/checkout@v4
+        with:
+          repository: godon-dev/godon-provenance
+          path: tools
+
+      - name: marker gate on the diff
+        run: python3 tools/scripts/gate_scan.py --base "${{ inputs.base }}"

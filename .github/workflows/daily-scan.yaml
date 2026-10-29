@@ -1,0 +1,70 @@
+name: daily-provenance-scan
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: [godon, godon-robots, godon-images, godon-charts, godon-cli, godon-controller, godon-documentation, godon-test-infra]
+    steps:
+      - name: checkout target repo
+        uses: actions/checkout@v4
+        with:
+          repository: godon-dev/${{ matrix.repo }}
+          path: target
+          fetch-depth: 1
+
+      - name: checkout tooling
+        uses: actions/checkout@v4
+        with:
+          path: tools
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: install scancode
+        run: pip install scancode-toolkit
+
+      - name: scancode pass (license, copyright, packages)
+        run: |
+          scancode --license --copyright --package --only-findings \
+            --json scan.json target
+
+      - name: trivy pass (vulns, dep licenses)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: target
+          scanners: vuln,license
+          format: json
+          output: trivy.json
+
+      - name: sbom export (GitHub native, language-agnostic)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/godon-dev/${{ matrix.repo }}/dependency-graph/sbom" \
+            > sbom.json || echo '{"sbom": null}' > sbom.json
+
+      - name: policy summary
+        run: |
+          python3 tools/scripts/runner_summary.py scan.json trivy.json \
+            || echo "FOREIGN=$(python3 tools/scripts/runner_summary.py scan.json trivy.json --count)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: provenance-${{ matrix.repo }}
+          path: |
+            scan.json
+            trivy.json
+            sbom.json
