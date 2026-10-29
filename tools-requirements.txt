@@ -1,0 +1,5 @@
+# godon-provenance runner deps — installed on ephemeral GitHub runners only.
+# pluggy pinned: pluggy>=1.6 drops the 'pre_scan' hookspecs ScanCode's
+# plugincode expects (first run 2026-10-29 found this the hard way).
+scancode-toolkit
+pluggy==1.5.0
