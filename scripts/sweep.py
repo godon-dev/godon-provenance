@@ -14,12 +14,25 @@ import datetime
 import json
 import os
 import subprocess
-import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-sys.path.insert(0, HERE)
-from gate_scan import BLOCK_MATCHES, HOUSE_MARKER, line_has_year  # noqa: E402
+
+HOUSE_MARKER = "Tafelmeier"
+
+# (kind, case-insensitive substrings, all-of required, allow-if substrings)
+BLOCK_MATCHES = [
+    ("copyleft:gpl", ["gnu general public license"], [], ["affero", "lesser"]),
+    ("copyleft:cddl", ["cddl", "common development and distribution license"], [], []),
+    ("copyleft:sspl", ["sspl", "server side public license"], [], []),
+    ("copyleft:bsl", ["business source license", "busl-1", "bsl-1.1"], [], []),
+    ("copyleft:commons-clause", ["commons clause"], [], []),
+    ("secret:private-key", ["private key"], ["begin"], []),
+]
+
+
+def line_has_year(seg):
+    return any(seg[j:j + 4].isdigit() for j in range(len(seg) - 3))
 
 TEXT_EXT = (".py", ".rs", ".sh", ".md", ".yaml", ".yml", ".toml", ".json", ".txt", ".js", ".ts", ".html", ".css", ".go", ".nix", ".conf", ".service", ".xml", ".svg", ".cfg", ".ini", ".lock", ".mod", ".sum", ".tf")
 MAX_FILE = 1000000

@@ -27,10 +27,9 @@ platform (org secret scanning + push protection) and to the auth skill.
   Language-agnostic by ruling. Pull-based: no per-repo wiring anywhere.
 - `scripts/runner_summary.py` — the policy check over runner outputs.
 - `.github/workflows/weekly-scorecard.yaml` — OpenSSF Scorecard posture pass.
-- `scripts/gate_scan.py` — optional per-PR marker gate (second speed,
-  unwired; ride via `.github/workflows/gate.yaml` + a ruleset if wanted).
 - `scripts/sweep.py` — local marker baseline (manual/emergency lane;
-  mind-chime is local-only and stays in this lane).
+  mind-chime is local-only and stays in this lane). No per-PR gate exists
+  by ruling: the daily runner scan is the instrument.
 - `notes/` — the provenance record. One file per repo per sweep.
 
 Install doctrine: nothing installs on agent machines. The heavy engine
@@ -39,10 +38,6 @@ repos. Snippet pass against dependency-source corpora is the workflow's
 phase 2 (jscpd or scancode-detect; language-agnostic either way).
 
 ## Usage
-
-Gate on a diff, from inside any org repo:
-
-    python3 scripts/gate_scan.py --base origin/main
 
 Baseline sweep (reads `config` for the repo list):
 
