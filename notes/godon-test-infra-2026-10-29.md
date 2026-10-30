@@ -14,4 +14,4 @@
 - [BLOCK] copyleft:gpl — testing/infra/machines/nix/configuration.nix:14 — ## GNU General Public License for more details.
 - [BLOCK] copyleft:gpl — testing/infra/machines/nix/configuration.nix:16 — ## You should have received a copy of the GNU General Public License
 
-disposition: pending triage per triage.md
+disposition: id_rsa + id_rsa.pub removed via godon-test-infra PR #5 (rebase-merged 2026-10-29, holder-ruled: VMs decommissioned, key opens nothing; history keeps old bytes). nix GPL headers pending triage — check ScanCode artifact for exact version (GPL-3 = AGPL-compatible, note and close; GPL-2-only = rewrite).
