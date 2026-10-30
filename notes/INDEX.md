@@ -12,3 +12,4 @@
 | godon-test-infra | 11 | 0 | 7 | review: 7 (7 block) |
 | godon-org-profile | 2 | 0 | 0 | clean |
 | godon-mind-chime | 123 | 0 | 0 | clean |
+| snippet-audit (one-shot) | 8 repos | - | 0 cross clones | clean — abstraction invariant verified |
