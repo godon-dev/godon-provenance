@@ -14,4 +14,4 @@
 - [BLOCK] copyleft:gpl — testing/infra/machines/nix/configuration.nix:14 — ## GNU General Public License for more details.
 - [BLOCK] copyleft:gpl — testing/infra/machines/nix/configuration.nix:16 — ## You should have received a copy of the GNU General Public License
 
-disposition: id_rsa + id_rsa.pub removed via godon-test-infra PR #5 (rebase-merged 2026-10-29, holder-ruled: VMs decommissioned, key opens nothing; history keeps old bytes). nix GPL headers pending triage — check ScanCode artifact for exact version (GPL-3 = AGPL-compatible, note and close; GPL-2-only = rewrite).
+disposition: id_rsa + id_rsa.pub removed via godon-test-infra PR #5 (rebase-merged 2026-10-29, holder-ruled: VMs decommissioned, key opens nothing; history keeps old bytes). GPL headers RESOLVED 2026-10-29: own files, own copyright (2019), legacy pre-AGPL header wording (GPL-3.0-or-later instead of house AGPL-3.0-or-later) — compatible either way; headers aligned to house standard via PR.

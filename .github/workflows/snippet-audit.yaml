@@ -1,0 +1,49 @@
+name: snippet-audit
+# One-shot deep check, manual trigger only: repo files vs dependency
+# sources, function-grade threshold. Expected result: zero (clean
+# abstraction by architecture). Not a standing organ.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: [godon, godon-robots, godon-images, godon-charts, godon-cli, godon-controller, godon-documentation, godon-test-infra]
+    steps:
+      - name: checkout target repo
+        uses: actions/checkout@v4
+        with:
+          repository: godon-dev/${{ matrix.repo }}
+          path: target
+          fetch-depth: 1
+
+      - name: checkout tooling
+        uses: actions/checkout@v4
+        with:
+          path: tools
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: fetch dependency-source corpus
+        run: bash tools/scripts/corpus_fetch.sh target corpus
+
+      - name: jscpd compare (function-grade)
+        run: npx --yes jscpd target corpus --min-tokens 70 --reporters jsonFull --output report --silent
+
+      - name: filter to repo-vs-corpus pairs
+        run: |
+          python3 tools/scripts/snippet_filter.py report/jscpd-report.json target || \
+            python3 tools/scripts/snippet_filter.py report/json/jscpd-report.json target
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: snippet-audit-${{ matrix.repo }}
+          path: report/
