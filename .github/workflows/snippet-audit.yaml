@@ -36,7 +36,7 @@ jobs:
         run: bash tools/scripts/corpus_fetch.sh target corpus
 
       - name: jscpd compare (function-grade)
-        run: npx --yes jscpd target corpus --min-tokens 70 --reporters jsonFull --output report --silent
+        run: npx --yes jscpd target corpus --min-tokens 70 --reporters json,consoleFull --output report
 
       - name: filter to repo-vs-corpus pairs
         run: |
